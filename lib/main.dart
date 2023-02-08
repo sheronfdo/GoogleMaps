@@ -58,8 +58,8 @@ class MapSampleState extends State<MapSample> {
   LatLng endLocation = LatLng(7.00000, 80.00000);
   String locationTitleFrom = "Search Location";
   String locationTitleTo = "Search Location";
-  PointLatLng locationFrom = PointLatLng(7.00000, 80.00000);
-  PointLatLng locationTo = PointLatLng(7.00000, 80.00000);
+  PointLatLng locationFrom = PointLatLng(0, 0);
+  PointLatLng locationTo = PointLatLng(0, 0);
   double distance = 0.0;
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
@@ -76,7 +76,7 @@ class MapSampleState extends State<MapSample> {
       polylineId: id,
       color: Colors.redAccent,
       points: polylineCoodinates,
-      width: 8,
+      width: 2,
     );
     polylines[id] = polyline;
     setState(() {});
@@ -123,7 +123,6 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
-    List<LatLng> polylineCoodinates = [];
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -246,6 +245,7 @@ class MapSampleState extends State<MapSample> {
                       child: Material(
                         child: InkWell(
                           onTap: () async {
+                            final List<LatLng> polylineCoodinates = [];
                             double lat = 0;
                             double lang = 0;
                             final place = await PlacesAutocomplete.show(
@@ -258,8 +258,7 @@ class MapSampleState extends State<MapSample> {
                             );
                             if (place != null) {
                               setState(() {
-                                locationTitleFrom =
-                                    place.description.toString();
+                                locationTitleTo = place.description.toString();
                               });
 
                               //from google_maps_webservice package
@@ -276,10 +275,10 @@ class MapSampleState extends State<MapSample> {
                                 lat = geometry.location.lat;
                                 lang = geometry.location.lng;
                               }
-                              locationFrom = PointLatLng(lat, lang);
+                              locationTo = PointLatLng(lat, lang);
 
                               setState(() {
-                                startLocation = LatLng(
+                                endLocation = LatLng(
                                   lat,
                                   lang,
                                 );
@@ -307,7 +306,7 @@ class MapSampleState extends State<MapSample> {
                                     locationTo.latitude, locationTo.longitude),
                               );
                               if (result.points.isNotEmpty) {
-                                result.points.forEach((PointLatLng point) {
+                                result.points.forEach((point) {
                                   polylineCoodinates.add(
                                       LatLng(point.latitude, point.longitude));
                                 });
